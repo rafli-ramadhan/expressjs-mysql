@@ -15,7 +15,7 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
 // mysql connection
-require("./config/db.connect.js").sync();
+require("./app/models").sync();
 
 // route
 app.get("/", (req, res) => {
