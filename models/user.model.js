@@ -1,18 +1,12 @@
-const { sequelize, DataTypes } = require("sequelize");
-
-/* Define model - 1st version
+/* Define model
 module.exports = (sequelize) => {
-  const User = sequelize.define(
-    modelName, attributes, options
-  );
+  const User = sequelize.define(modelName, attributes, options);
   return User;
-}
-*/
-
-// Define model - 2nd version
-module.exports = (sequelize, DataTypes) => {
+}*/
+module.exports = () => {
+  const { sequelize, DataTypes } = require("sequelize");
   const User = sequelize.define(
-    "user", 
+    "user",  // model name
     {
       id: {
         type: DataTypes.UUID,

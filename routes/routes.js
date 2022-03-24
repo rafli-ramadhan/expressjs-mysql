@@ -1,43 +1,21 @@
-// Assign Register, Authentication and Authorization Controller in an Array
-const AuthController = [
-  require("../controllers/auth/newuser.signup.controller.js").signUp,
-  require("../controllers/auth/user.signin.controller.js").signIn,
-];
-
-// Assign CRUD(Create, Read, Update and Delete) Controller in an Array
-const CrudController = [
-  // require("../controllers/admin/create.controller.js").create,
-  // require("../controllers/admin/readAll.controller.js").getAll,
-  // require("../controllers/admin/readById.controller.js").findOne,
-  // require("../controllers/admin/updateById.controller.js").update,
-  // require("../controllers/admin/deleteAll.controller.js").deleteAll,
-  // require("../controllers/admin/deleteById.controller.js").deleteById,
-]
-
 module.exports = app => {
+  const router = require("express").Router();
+  // sign up
+  router.post("/register", require("../controllers/auth/newuser.signup.controller.js").signUp);
+  // sign in (authentication)
+  router.post("/login", require("../controllers/auth/user.signin.controller.js").signIn);
+  // authorization
 
-  // User sign up
-  app.post("/api/register", AuthController[0]);
-  
-  // User sign in
-  app.post("/api/login", AuthController[1]);
+  // retrieve all users
+  router.get("/users", require("../controllers/users.controller.js").getAll);
+  // retrieve a single user by id
+  router.get("/users/:userId", require("../controllers/users.controller.js").findOne);
+  // update a user by id
+  router.put("/users/:userId", require("../controllers/users.controller.js").update);
+  // delete a user by id
+  router.delete("/users/:userId", require("../controllers/users.controller.js").deleteAll);
+  // delete All
+  router.delete("/users", require("../controllers/users.controller.js").deleteById);
 
-  // Create a new Customer
-  // app.post("/user", CrudController[0]);
-
-  // Retrieve all Customers
-  // app.get("/user", CrudController[1]);
-
-  // Retrieve a single Customer with customerId\
-  // app.get("/user/:userId", CrudController[2]);
-
-  // Update a Customer with customerId
-  // app.put("/user/:userId", CrudController[3]);
-
-  // Delete a Customer with customerId
-  // app.delete("/user/:userId", CrudController[4]);
-
-  // Delete All
-  // app.delete("/user", CrudController[5]);
-
+  app.use('/api', router)
 };

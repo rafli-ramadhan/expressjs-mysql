@@ -1,11 +1,15 @@
-const Tutorial = require("../models/tutorial.model.js");
-const Op = require("sequelize").Op;
+const db = require("../models");
+const Tutorial = db.tutorials;
+const Op = db.Sequelize.Op;
 
 // Create and Save a new Tutorial
 exports.create = (req, res) => {
   // Validate request
   if (!req.body.title) {
-    return res.status(400).send({ message: "Content can not be empty!"});
+    res.status(400).send({
+      message: "Content can not be empty!"
+    });
+    return;
   }
 
   // Create a Tutorial
@@ -18,10 +22,10 @@ exports.create = (req, res) => {
   // Save Tutorial in the database
   Tutorial.create(tutorial)
     .then(data => {
-      return res.status(200).send(data);
+      res.send(data);
     })
     .catch(err => {
-      return res.status(500).send({
+      res.status(500).send({
         message:
           err.message || "Some error occurred while creating the Tutorial."
       });
@@ -35,10 +39,10 @@ exports.findAll = (req, res) => {
 
   Tutorial.findAll({ where: condition })
     .then(data => {
-      return res.status(200).send(data);
+      res.send(data);
     })
     .catch(err => {
-      return res.status(500).send({
+      res.status(500).send({
         message:
           err.message || "Some error occurred while retrieving tutorials."
       });
@@ -52,15 +56,15 @@ exports.findOne = (req, res) => {
   Tutorial.findByPk(id)
     .then(data => {
       if (data) {
-        return res.status(200).send(data);
+        res.send(data);
       } else {
-        return res.status(404).send({
+        res.status(404).send({
           message: `Cannot find Tutorial with id=${id}.`
         });
       }
     })
     .catch(err => {
-      return res.status(500).send({
+      res.status(500).send({
         message: "Error retrieving Tutorial with id=" + id
       });
     });
@@ -75,17 +79,17 @@ exports.update = (req, res) => {
   })
     .then(num => {
       if (num == 1) {
-        return res.send({
+        res.send({
           message: "Tutorial was updated successfully."
         });
       } else {
-        return res.send({
+        res.send({
           message: `Cannot update Tutorial with id=${id}. Maybe Tutorial was not found or req.body is empty!`
         });
       }
     })
     .catch(err => {
-      return res.status(500).send({
+      res.status(500).send({
         message: "Error updating Tutorial with id=" + id
       });
     });
@@ -100,17 +104,17 @@ exports.delete = (req, res) => {
   })
     .then(num => {
       if (num == 1) {
-        return res.send({
+        res.send({
           message: "Tutorial was deleted successfully!"
         });
       } else {
-        return res.send({
+        res.send({
           message: `Cannot delete Tutorial with id=${id}. Maybe Tutorial was not found!`
         });
       }
     })
     .catch(err => {
-      return res.status(500).send({
+      res.status(500).send({
         message: "Could not delete Tutorial with id=" + id
       });
     });
@@ -123,10 +127,10 @@ exports.deleteAll = (req, res) => {
     truncate: false
   })
     .then(nums => {
-      return res.send({ message: `${nums} Tutorials were deleted successfully!` });
+      res.send({ message: `${nums} Tutorials were deleted successfully!` });
     })
     .catch(err => {
-      return res.status(500).send({
+      res.status(500).send({
         message:
           err.message || "Some error occurred while removing all tutorials."
       });
@@ -137,10 +141,10 @@ exports.deleteAll = (req, res) => {
 exports.findAllPublished = (req, res) => {
   Tutorial.findAll({ where: { published: true } })
     .then(data => {
-      return res.status(200).send(data);
+      res.send(data);
     })
     .catch(err => {
-      return res.status(500).send({
+      res.status(500).send({
         message:
           err.message || "Some error occurred while retrieving tutorials."
       });

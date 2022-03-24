@@ -7,8 +7,8 @@ const dbConnection = new Sequelize(
   process.env.DB_PASSWORD,
   {
     host: process.env.DB_HOST,
-    dialect: "mysql", // 'mysql' | 'mariadb' | 'postgres' | 'mssql'
-    operatorsAliases: 0, // 0 for false and 1 for true
+    dialect: "mysql",     // 'mysql' | 'mariadb' | 'postgres' | 'mssql'
+    operatorsAliases: 0,  // 0 for false and 1 for true
     pool: {
       max: 5,
       min: 0,
