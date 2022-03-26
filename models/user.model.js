@@ -1,11 +1,10 @@
-const { Sequelize, DataTypes } = require("sequelize");
-
-const User = Sequelize.define(
+module.exports = (DataTypes, sequelize) => {
+  User = sequelize.define(
     "user",  // model name
     {
       id: {
         type: DataTypes.UUID,
-        defaultValue: DataTypes.UUIDV4, // Or DataTypes.UUIDV1
+        defaultValue: DataTypes.UUIDV4,
         primaryKey: true
       },
       name: {
@@ -21,12 +20,14 @@ const User = Sequelize.define(
         defaultValue: ""
       },
       gender: {
-        type: DataTypes.ENUM(['male', 'female'])
+        type: DataTypes.ENUM(['male', 'female']),
+        defaultValue: "male"
       },
       role: {
-        type: DataTypes.ENUM(['admin', 'user'])
+        type: DataTypes.ENUM(['admin', 'member']),
+        defaultValue: "member"
       },
-      updatedSkriningResult: {
+      updatedScreeningResult: {
         type: DataTypes.STRING,
         defaultValue: ""
       },
@@ -39,11 +40,10 @@ const User = Sequelize.define(
         defaultValue: DataTypes.NOW
       },
     },
-    /*{
-      freezeTableName: true // Enforcing the table name to be equal to the model name
-    },*/
+    // {freezeTableName: true // Enforcing the table name to be equal to the model name },
     {
-      tableName: 'user_db' // Providing the table name directly
+      tableName: 'user_db'    // Providing the table name directly
     }
-);
-module.exports = User;
+  );
+  return User;
+}

@@ -23,14 +23,16 @@ exports.newUser = (req, res) => {
   // save new user in the database
   User.create(newUser)
   .then(data => { return res.status(200).send(data); })
-  .catch(error => { return res.status(500).send({ message: error.message || "Some error occurred while creating the user."}); });
+  .catch(error => { 
+    return res.status(500).send({ message: error.message || "Some error occurred while creating the user."});
+  });
 };
 
 exports.findAll = (req, res) => {
   User.findAll()
   .then(data => { return res.status(200).send(data);})
   .catch(error => {
-    res.status(500).send({message:error.message || "Some error occurred while retrieving tutorials."});
+    return res.status(500).send({message:error.message || "Some error occurred while retrieving tutorials."});
   });
 };
 
@@ -41,29 +43,30 @@ exports.findOne = (req, res) => {
       id: req.params.id
     }
   })
-  .then(data => { return res.status(200).send(data);})
+  .then(data => { 
+    if (!data) {
+      return res.status(404).send({message: `Data not found with id ${req.params.id}`});
+    }
+    return res.status(200).send(data);
+  })
   .catch(error => {
     if (error.kind === "not_found") {
       return res.status(404).send({message: `Not found user with id ${req.params.userId}.`});
     } 
     else {
-      return res.status(500).send({message: "Error retrieving user with id " + req.params.userId});
+      return res.status(500).send({message: error.message || "Error retrieving user with id " + req.params.userId});
     }
   });
 };
 
 exports.findOneAndUpdate = (req, res) => {
-  console.log(req.body);
   User.findOne({
     where: {
       id: req.params.id
     }
   })
   .then(currentData => {
-    console.log(currentData);
-    if(!currentData) {
-      return res.status(404).send({ message: 'data not found with id ' + req.params.id + '. Make sure the id was correct' });
-    }
+    let {newName, newEmail, newPassword, newGender, newRole, newUpdatedScreeningResult} = '';
     if (!req.body.name) { newName = currentData.name}
     if (!req.body.email) { newEmail = currentData.email}
     if (!req.body.password) { newPassword = currentData.password}
@@ -76,7 +79,7 @@ exports.findOneAndUpdate = (req, res) => {
     if (req.body.gender) { newGender = req.body.gender}
     if (req.body.role) { newRole = req.body.role}
     if (req.body.updatedScreeningResult) { newUpdatedScreeningResult = req.body.updatedScreeningResult}
-    const newUpdatedData =
+    const newData =
     {
       name: newName,
       email: newEmail,
@@ -85,33 +88,40 @@ exports.findOneAndUpdate = (req, res) => {
       role: newRole,
       updatedScreeningResult: newUpdatedScreeningResult,
     }
-    console.log(newUpdatedData);
+    console.log(newData);
     // update
     User.update(
-      newUpdateData,
+      newData,
       {
         where: {
           id: req.params.id
         }
       }
     )
-    .then(updatedData => { return res.status(200).send(updatedData);})
-    .catch(error => {
-      if (error.kind === "not_found") {
-        return res.status(404).send({message: `User with id ${req.params.userId} not found.`});
+    .then(num => {
+      if (num == 1) {
+        console.log('Success update data');
+        return res.status(200).send({message: "User was updated successfully."});
       } 
       else {
-        return res.status(500).send({message: "Error updating User with id " + req.params.userId});
+        return res.status(500).send({message: `Cannot update user data with id=${id}.`});
+      }
+    })
+    .catch(error => {
+      if (error.kind === "not_found") {
+        return res.status(404).send({
+          message: `User with id ${req.params.userId} not found.`
+        });
+      } 
+      else {
+        return res.status(500).send({
+          message: error.message || "Error updating User with id " + req.params.userId
+        });
       }
     });
   })
   .catch(error => {
-    if (error.kind === "not_found") {
-      return res.status(404).send({message: `Not found user with id ${req.params.userId}.`});
-    } 
-    else {
-      return res.status(500).send({message: "Error retrieving user with id " + req.params.userId});
-    }
+    return res.status(500).send({message: error.message}); 
   });
 };
 
@@ -121,21 +131,25 @@ exports.destroyById = (req, res) => {
       id: req.params.id
     }
   })
-  .then(() => { return res.status(200).send({message: `User was deleted successfully!`});})
+  .then(() => { 
+    return res.status(200).send({message: `User was deleted successfully!`});
+  })
   .catch(error => {
     if (error) {
       if (error.kind === "not_found") {
         return res.status(404).send({message: `Not found user with id ${req.params.userId}.`});
       } 
       else {
-        return res.status(500).send({message: "Could not delete user with id " + req.params.userId});
+        return res.status(500).send({message: error.message || "Could not delete user with id " + req.params.userId});
       }
     } 
   });
 };
   
 exports.destroyAll = (req, res) => {
-  User.destroy()
+  User.destroy({
+    truncate: true
+  })
   .then(data => { return res.status(200).send({message: `All user were deleted successfully!` });})
   .catch(error => {
     return res.status(500).send({message: error.message || "Some error occurred while removing all user."});

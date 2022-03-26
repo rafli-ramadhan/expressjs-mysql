@@ -14,8 +14,8 @@ app.use(bodyParser.json());
 // parse requests of content-type - application/x-www-form-urlencoded
 app.use(bodyParser.urlencoded({ extended: true }));
 
-// mysql connection synchronously
-require("./config/sequelize.connect").sequelize.sync;
+// mysql connection synchronously and performs the necessary changes in the table to make it match the model
+require("./config/sequelize.connect").sequelize.sync({ alter: true});
 // synchronize all models and creates the table if it doesn't exist (and does nothing if it already exists)
 require("sequelize").sync;
 // or sequelize.sync({ force: true } - This creates the table, dropping it first if it already existed

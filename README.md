@@ -1,46 +1,40 @@
-# express-mysql
-Express.js Auth and CRUD App with MySQL Database
+# Express (4.17.1), Sequelize (6.16.1) and MySQL Portfolio for CRUD and Auth Application
 
-For instruction, please visit:
-> [Build Node.js Rest APIs with Express & MySQL](https://bezkoder.com/node-js-rest-api-express-mysql/)
+## Requirement
 
-More Practice
-> [Build Node.js Rest APIs with Express, Sequelize & MySQL](https://bezkoder.com/node-js-express-sequelize-mysql/)
+1. Node.js
+2. MySQL
+3. Apache
+4. Postman
 
-> [Server side Pagination in Node.js with Sequelize and MySQL](https://bezkoder.com/node-js-sequelize-pagination-mysql/)
+## Set up
 
-> [Deploying/Hosting Node.js app on Heroku with MySQL database](https://bezkoder.com/deploy-node-js-app-heroku-cleardb-mysql/)
-
-Security:
-> [Node.js Express: JWT example | Token Based Authentication & Authorization](https://bezkoder.com/node-js-jwt-authentication-mysql/)
-
-Associations:
-> [Sequelize Associations: One-to-Many Relationship example](https://bezkoder.com/sequelize-associate-one-to-many/)
-
-> [Sequelize Associations: Many-to-Many Relationship example](https://bezkoder.com/sequelize-associate-many-to-many/)
-
-Fullstack:
-> [Vue.js + Node.js + Express + MySQL example](https://bezkoder.com/vue-js-node-js-express-mysql-crud-example/)
-
-> [Vue.js + Node.js + Express + MongoDB example](https://bezkoder.com/vue-node-express-mongodb-mevn-crud/)
-
-> [Angular 8 + Node.js + Express + MySQL example](https://bezkoder.com/angular-node-express-mysql/)
-
-> [Angular 10 + Node.js + Express + MySQL example](https://bezkoder.com/angular-10-node-js-express-mysql/)
-
-> [Angular 11 + Node.js Express + MySQL example](https://bezkoder.com/angular-11-node-js-express-mysql/)
-
-> [React + Node.js + Express + MySQL example](https://bezkoder.com/react-node-express-mysql/)
-
-## Project setup
 ```
 npm install
 ```
 
-### Run
+### Running for Development
 ```
-node server.js
+npm run dev
 ```
+
+App will be running on port 5000 (http://localhost:5000).
+
+### What is this Repository for?
+
+This project was my undergraduate thesis for chatbot backend that build with express.js and sequelize with mysql connection.
+
+### Clone this Repository ?
+
+Feel free to clone this repo.
+
+## API Endpoint
+
+Open `./routes/routes.js`
+
+## API Endpoint for Development 
+
+http://127.0.0.1:5000
 
 ### Reference Documentation
 
@@ -59,7 +53,7 @@ https://sequelize.org/v6/manual/model-basics.html
 
 4.) Synchronizing all models at once : https://sequelize.org/v6/manual/model-basics.html#providing-the-table-name-directly
 
-### Error Documentation
+### Solved Error Documentation
 
 1.) SyntaxError: await is only valid in async functions and the top level bodies of modules
 
