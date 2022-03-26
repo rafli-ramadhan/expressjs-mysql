@@ -1,11 +1,6 @@
-/* Define model
-module.exports = (sequelize) => {
-  const User = sequelize.define(modelName, attributes, options);
-  return User;
-}*/
-module.exports = () => {
-  const { sequelize, DataTypes } = require("sequelize");
-  const User = sequelize.define(
+const { Sequelize, DataTypes } = require("sequelize");
+
+const User = Sequelize.define(
     "user",  // model name
     {
       id: {
@@ -50,6 +45,5 @@ module.exports = () => {
     {
       tableName: 'user_db' // Providing the table name directly
     }
-  );
-  return User;
-}
+);
+module.exports = User;

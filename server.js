@@ -15,9 +15,8 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
 // mysql connection synchronously
-require("./config/db.connect").sync;
-// synchronize all models
-// This creates the table if it doesn't exist (and does nothing if it already exists)
+require("./config/sequelize.connect").sequelize.sync;
+// synchronize all models and creates the table if it doesn't exist (and does nothing if it already exists)
 require("sequelize").sync;
 // or sequelize.sync({ force: true } - This creates the table, dropping it first if it already existed
 console.log("All models were synchronized successfully.");

@@ -1,146 +1,94 @@
-// const User = require("../../models/user.model.js");
-const { Sequelize, DataTypes } = require('sequelize');
-const sequelize = new Sequelize('mysql::memory:');
+const User = require("../config/sequelize.connect").User;
 const bcrypt = require('bcrypt');
+const jwt = require('jsonwebtoken');
 
-// Define model - 2nd version
-const Model = sequelize.define("User", 
-  {
-    id: {
-      type: DataTypes.UUID,
-      defaultValue: DataTypes.UUIDV4, // Or DataTypes.UUIDV1
-      primaryKey: true
-    },
-    name: {
-      type: DataTypes.STRING,
-      defaultValue: ""
-    },
-    email: {
-      type: DataTypes.STRING,
-      defaultValue: ""
-    },
-    password: {
-      type: DataTypes.STRING,
-      defaultValue: ""
-    },
-    gender: {
-      type: DataTypes.ENUM(['male', 'female'])
-    },
-    role: {
-      type: DataTypes.ENUM(['admin', 'user'])
-    },
-    updatedSkriningResult: {
-      type: DataTypes.STRING,
-      defaultValue: ""
-    },
-    createdAt: {
-      type: DataTypes.DATE,
-      defaultValue: DataTypes.NOW
-    },
-    updatedAt:{
-      type: DataTypes.DATE,
-      defaultValue: DataTypes.NOW
-    },
-  },
-  /*{
-    freezeTableName: true // Enforcing the table name to be equal to the model name
-  },*/
-  {
-    tableName: 'user_db' // Providing the table name directly
-  }
-);
-
-// create and save a new data
-exports.signUp = (req, res) => {
-  // validate request
-  if (!req.body) { return res.status(400).send({ message:"Content can not be empty!" }); }
-  if (!req.body.email) { return res.status(400).send({ message:"Email can not be empty!" });}
-  if (!req.body.name) { return res.status(400).send({ message:"Name can not be empty!" });}
-  if (!req.body.password) { return res.status(400).send({ message:"Password can not be empty!" });}
-  if (!req.body.gender) { return res.status(400).send({ message:"Gender can not be empty!" });}
-  if (!req.body.role) { return res.status(400).send({ message:"Role can not be empty!" });}
-  // create a new user
-  const newUser = {
-    name: req.body.name,
-    email: req.body.email,
-    password: req.body.password,
-    gender: req.body.gender,
-    role: req.body.role,
-    updatedSkriningResult: req.body.updatedSkriningResult,
-  };
-  console.log(newUser); 
-  // save new user in the database
-  // Model.create(newUser, (err, data) => {
-  Model.create(newUser)
-  .then(data => { return res.status(200).send(data); })
-  .catch(err => { return res.status(500).send({ message: err.message || "Some error occurred while creating the user."}); });
-    //if (err) return res.status(500).send({ message: err.message || "Some error occurred while creating the user." });
-    //else return res.status(200).send(data);
-  //});
-};
-
-// Another way using then and catch
-exports.signUp2 = (req, res) => {
-  // validate request
-  if (!req.body) { return res.status(400).send({ message:"Content can not be empty!" }); }
-  if (!req.email) { return res.status(400).send({ message:"Email can not be empty!" });}
-  if (!req.name) { return res.status(400).send({ message:"Name can not be empty!" });}
-  if (!req.password) { return res.status(400).send({ message:"Password can not be empty!" });}
-  // create a new user
-  const newUser = new User({
-    email: req.body.email,
-    name: req.body.name,
-    active: req.body.active
-  });
-  console.log(newUser); 
-  // save new user in the database
-  User.create(newUser)
-  .then(data => { return res.status(200).send(data); })
-  .catch(err => { return res.status(500).send({ message: err.message || "Some error occurred while creating the user."}); });
-};
-
-// create and save a new data
 exports.signIn = (req, res) => {
-  // validate request
-  if (!req.body) {
-      return res.status(400).send({ message:"Content can not be empty!" });
-  }
-  // create a new user
-  const newUser = new User({
-      email: req.body.email,
-      name: req.body.name,
-      active: req.body.active
-  });
+    // validate request
+    let {email,password} = req.body;
+    console.log(req.body);
+    if (!email) { return res.status(400).send({ message: 'Email harus di isi !' }); }
+    if (!password) { return res.status(400).send({ message: 'Password harus di isi !' }); }
+    if (password.length < 8) { return res.status(400).send({ message: 'Password harus sama dengan atau lebih dari 8 karakter !' }); }
+    // check email already exist or not
+    try {
+        User.findOne({
+          where: {
+            email: req.body.email
+          }
+        })
+        .then((user)=>{
+            if (!user) {
+                console.log('Email tidak ditemukan pada database.');
+                return res.status(500).send({ message: 'Email tidak terdaftar, silahkan daftar terlebih dahulu.'}); 
+            }
+            else if (user) {
+                console.log('Email ditemukan pada database.');
+                // comparing passwords
+                var passwordIsValid = bcrypt.compareSync(
+                    req.body.password, user.password
+                );
+                if (!passwordIsValid) {
+                    console.log('Email terdaftar, tapi password salah.');
+                    return res.status(409).send({
+                        message: 'Email terdaftar, tapi password salah.',
+                        token: null,
+                    });
+                }
+                else if (passwordIsValid) {
+                    // signing token with user id
+                    var accessToken = jwt.sign(
+                        {id: user.id},
+                        process.env.JWT_SECRET,
+                        {expiresIn: 86400},
+                    );
+                    console.log('Berhasil masuk.');
+                    console.log('Token: ', accessToken);
+                    return res.status(200).send({
+                        user: {
+                            id: user.id,
+                            name: user.name,
+                            email: user.email,
+                            role: user.role,
+                        },
+                        token: accessToken,
+                    });
+                }
+            }
+        })
+    }
+    catch(error) { return res.status(500).send({ message: error || 'Coba cek koneksi internetmu.'}); }
+}
 
-  // save new user in the database
-  User.create(newUser, (err, data) => {
-      if (err)
-          return res.status(500).send({
-              message: err.message || "Some error occurred while creating the user."
-          });
-      else return res.status(200).send(data);
-  });
-};
-
-// Another way using then and catch
-exports.create2 = (req, res) => {
-  // validate request
-  if (!req.body) {
-      return res.status(400).send({ message:"Content can not be empty!" });
-  }
-  // create a new user
-  const newUser = new User({
-      email: req.body.email,
-      name: req.body.name,
-      active: req.body.active
-  });
-
-  // save new user in the database
-  User.create(newUser).then(data => {
-      return res.status(200).send(data);
-  }).catch(err => {
-      return res.status(500).send({
-          message: err.message || "Some error occurred while creating the user."
-      });
-  });
+exports.verifyAccessToken = (req, res) => {
+    const header = req.headers.authorization;
+    const authHeader = req.headers['authorization']; // header and authHeader are same
+    const token = authHeader.split(' ')[1];
+    console.log(authHeader);
+    console.log(header);
+    console.log(token);
+    // validation
+    if (!authHeader) { return res.status(403).send({message: 'request header undefined'}); }
+    // convert token to json (decoded)
+    const decodedResult = jwt.verify(token, process.env.JWT_SECRET);
+    console.log(decodedResult.id);
+    User.findOne({
+      where: {
+        id: decodedResult.id
+      }
+    })
+    .then(user => {
+        if (user.role === 'admin') {
+            console.log(user.name);
+            return res.status(200).send({
+                message: 'congratulations! there is no hidden content',
+                name: user.name,
+            });
+        }
+        console.log(user.name);
+        return res.status(200).send({
+            message: 'congratulations! but there is a hidden content',
+            name: user.name,
+        });
+    })
+    .catch(error => { return res.status(401).send({message: 'invalid jwt token'}); });
 };
