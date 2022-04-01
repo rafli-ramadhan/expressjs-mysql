@@ -1,4 +1,4 @@
-const User = require("../config/sequelize.connect").User;
+const User = require("../models").User;
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 

@@ -65,11 +65,15 @@ Solution : In server.js change `require("./config/db.connect").sync();` to `requ
 
 3.) Error : Access denied for user ''@'localhost' (using password: NO)
 
-Solution : install dotenv, then and add `require('dotenv').config();` in server.js
+Solution : 
+
+- Install dotenv, then and add `require('dotenv').config();` in server.js
 https://stackoverflow.com/questions/46200729/er-access-denied-error-access-denied-for-user-localhost-using-password-n
 
 Note : In node.js application, `require('dotenv').config();` line is needed in server.js file when developing locally in order to use environment variables.
 https://stackoverflow.com/questions/60480863/requiredotenv-config-in-node-js
+
+- MySQL server must running at the same time
 
 4.)  Error : listen EADDRINUSE: address already in use :::3306
 

@@ -1,37 +1,38 @@
 const { Sequelize, DataTypes } = require("sequelize");
+const dbConfig = require("../config/db.config.js");
 
 const sequelize = new Sequelize(
-  process.env.DB_DATABASE,
-  process.env.DB_USERNAME,
-  process.env.DB_PASSWORD,
+  dbConfig.DB, 
+  dbConfig.USER, 
+  dbConfig.PASSWORD, 
   {
-    host: process.env.DB_HOST,
-    dialect: "mysql",
-    operatorsAliases: 0,  // 0 for false and 1 for true
+    host: dbConfig.HOST,
+    dialect: dbConfig.dialect,
+    operatorsAliases: 0,
     pool: {
-      max: 5,
-      min: 0,
-      acquire: 30000,
-      idle: 10000
-    },
-  },
-)
+      max: dbConfig.pool.max,
+      min: dbConfig.pool.min,
+      acquire: dbConfig.pool.acquire,
+      idle: dbConfig.pool.idle
+    }
+  }
+);
 
-// model
-const User = require("../models/user.model.js")(DataTypes, sequelize);
-
-// `sequelize.define` also returns the model
-console.log(User === sequelize.models.User); // true
-
-// Testing connection - 1st Version
+// testing connection
 sequelize.authenticate()
 .then(() => console.log('Connection has been established successfully.'))
 .catch(error => console.log('Unable to connect to the database:', error));
 
-module.exports = {User, sequelize}
+// assign sequelize, Sequelize and model to object db
+const db = {};
+db.Sequelize = Sequelize;
+db.sequelize = sequelize;
+db.User = require("./user.model.js")(DataTypes, sequelize);
+
+module.exports = db;
 
 /* 
-// Testing connection - 2nd Version - Working
+// testing connection - 2nd Version
 module.exports = async function connect() {
   try {
     await dbConnection.authenticate();

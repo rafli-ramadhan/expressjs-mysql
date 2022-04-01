@@ -1,7 +1,7 @@
 const express = require("express");
-
 const app = express();
 
+// set dotenv to able use env variable
 require('dotenv').config();
 
 // cors
@@ -15,17 +15,19 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
 // mysql connection synchronously and performs the necessary changes in the table to make it match the model
-require("./config/sequelize.connect").sequelize.sync({ alter: true});
-// synchronize all models and creates the table if it doesn't exist (and does nothing if it already exists)
-require("sequelize").sync;
-// or sequelize.sync({ force: true } - This creates the table, dropping it first if it already existed
-console.log("All models were synchronized successfully.");
+require("./models").sequelize.sync({ alter: true}).then(() => {
+  console.log("All models were synchronized successfully.");
+  console.log("Connected to database")
+})
+// // drop the table if it already exists
+// require("./models").sequelize.sync({ force: true }).then(() => {
+//   console.log("Drop and re-sync db.");
+// });
 
 // route
-app.get("/", (req, res) => { return res.status(200).send({ message: "Welcome express mysql application." }); });
-require("./routes/routes.js")(app);
+require("./routes")(app);
 
-// set port, listen for requests
+// server
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => {
   console.log(`Server is running on port ${PORT}.`);

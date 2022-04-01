@@ -1,5 +1,7 @@
 module.exports = app => {
   const router = require("express").Router();
+  // index
+  app.get("/", (req, res) => { return res.status(200).send({ message: "Welcome express mysql application." }); });
   // sign up new user
   router.post('/register', require('../controllers/user.controller.js').newUser);
   // sign in (user authentication)
@@ -18,4 +20,5 @@ module.exports = app => {
   router.delete('/users', require('../controllers/user.controller.js').destroyAll);
 
   app.use('/api', router)
+
 };
