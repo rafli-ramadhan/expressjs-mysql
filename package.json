@@ -1,24 +1,24 @@
 {
-  "name": "express-mysql",
-  "author": "mochamadrafli2018",
+  "name": "backend-chatbot-express-sequelize",
+  "author": "mochamad-rafli-ramadhan",
   "license": "MIT",
   "version": "1.0.0",
   "engines": {
     "node": ">=14.x",
     "npm": ">=6.x"
   },
-  "description": "Node.js Restful CRUD and Auth API with Node.js, Express and MySQL",
+  "description": "Node.js Restful CRUD and Auth API with Node.js, Express, Sequelize and MySQL",
   "private": false,
   "main": "server.js",
   "keywords": [
     "nodejs",
     "express",
-    "mysql",
-    "restapi"
+    "sequelize",
+    "mysql"
   ],
   "scripts": {
     "dev": "nodemon ./server.js",
-    "start": "NODE_ENV=production node ./app.js"
+    "start": "NODE_ENV=production node ./server.js"
   },
   "dependencies": {
     "@sequelize/core": "^7.0.0-alpha.10",

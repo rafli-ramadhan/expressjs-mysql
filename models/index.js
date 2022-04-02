@@ -30,16 +30,3 @@ db.sequelize = sequelize;
 db.User = require("./user.model.js")(DataTypes, sequelize);
 
 module.exports = db;
-
-/* 
-// testing connection - 2nd Version
-module.exports = async function connect() {
-  try {
-    await dbConnection.authenticate();
-    console.log('Connection has been established successfully.');
-  } catch (error) {
-    console.error('Unable to connect to the database:', error);
-  }
-  // In server.js remove require("./config/db.connect").sync with require("./config/db.connect")().sync;
-}
-*/
