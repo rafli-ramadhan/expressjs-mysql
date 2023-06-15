@@ -1,5 +1,5 @@
 module.exports = (DataTypes, sequelize) => {
-  User = sequelize.define(
+  Account = sequelize.define(
     "user",  // model name
     {
       id: {
@@ -45,5 +45,5 @@ module.exports = (DataTypes, sequelize) => {
       tableName: 'user_db'    // Providing the table name directly
     }
   );
-  return User;
+  return Account;
 }

@@ -17,3 +17,7 @@ module.exports = {
   registerSchema, 
   loginSchema
 }
+
+docker run --name mysql -e MYSQL_ROOT_PASSWORD=@Ugm428660 -p 3306:3306 -v $HOME/mysql-data:/var/lib/mysql -d mysql:8.0
+
+docker run --name mysql -e MYSQL_ROOT_PASSWORD=@Ugm428660 -v $HOME/mysql-data:/var/lib/mysql -d mysql:8.0
